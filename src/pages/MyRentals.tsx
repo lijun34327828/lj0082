@@ -57,6 +57,7 @@ export default function MyRentals() {
                 key={r.id}
                 rental={r}
                 currentFee={currentFees[r.id]?.currentFee}
+                isBuyout={currentFees[r.id]?.isBuyout}
                 onReturn={handleReturn}
               />
             ))}

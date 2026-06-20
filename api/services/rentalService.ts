@@ -36,19 +36,12 @@ export function returnRental(rentalId: number, returnStationId: number): any {
   if (!rental) {
     throw new Error('租赁记录不存在')
   }
-  if (rental.status !== 'active') {
+  if (rental.status !== 'active' && rental.status !== 'bought_out') {
     throw new Error('该租赁已结束，无法重复归还')
   }
 
   const now = new Date().toISOString()
-  const rule = getApplicableRule()
-  const calcResult = calculateFee(
-    rental.start_time,
-    now,
-    rule.hourly_rate,
-    rule.multiplier,
-    rule.buyout_price
-  )
+  const calcResult = calculateFee(rental.start_time, now)
 
   const finalStatus = calcResult.isBuyout ? 'bought_out' : 'returned'
 
@@ -111,16 +104,9 @@ export function getUnreturnedRentals(hoursThreshold: number = 24): any[] {
     .all(`-${hoursThreshold} hours`) as any[]
 
   return rentals.map((r) => {
-    const rule = getApplicableRule()
     const now = new Date().toISOString()
     const hours = calculateHours(r.start_time, now)
-    const calcResult = calculateFee(
-      r.start_time,
-      now,
-      rule.hourly_rate,
-      rule.multiplier,
-      rule.buyout_price
-    )
+    const calcResult = calculateFee(r.start_time, now)
     return {
       ...r,
       currentFee: calcResult.totalFee,
@@ -142,13 +128,7 @@ export function getCurrentFee(rentalId: number): any {
   const now = new Date().toISOString()
   const rule = getApplicableRule()
   const hours = calculateHours(rental.start_time, now)
-  const calcResult = calculateFee(
-    rental.start_time,
-    now,
-    rule.hourly_rate,
-    rule.multiplier,
-    rule.buyout_price
-  )
+  const calcResult = calculateFee(rental.start_time, now)
 
   return {
     rentalId: rental.id,

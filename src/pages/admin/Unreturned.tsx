@@ -55,11 +55,12 @@ export default function Unreturned() {
           </thead>
           <tbody>
             {unreturnedRentals.map((r: Rental) => {
+              const isBuyoutPending = r.isBuyoutPending;
               const isBoughtOut = r.status === 'bought_out';
               return (
                 <tr
                   key={r.id}
-                  className={`border-b border-white/5 ${isBoughtOut ? 'bg-brand-orange/5' : ''}`}
+                  className={`border-b border-white/5 ${isBoughtOut || isBuyoutPending ? 'bg-brand-orange/5' : ''}`}
                 >
                   <td className="px-4 py-3 font-mono text-xs text-white/70">#{r.id}</td>
                   <td className="px-4 py-3 text-xs">{r.userId}</td>
@@ -82,9 +83,11 @@ export default function Unreturned() {
                     <span className={`rounded-full px-2 py-0.5 text-xs ${
                       isBoughtOut
                         ? 'bg-brand-orange/10 text-brand-orange'
-                        : 'bg-brand-green/10 text-brand-green'
+                        : isBuyoutPending
+                          ? 'bg-brand-orange/10 text-brand-orange'
+                          : 'bg-brand-green/10 text-brand-green'
                     }`}>
-                      {isBoughtOut ? '已买断' : '未归还'}
+                      {isBoughtOut ? '已买断' : isBuyoutPending ? '待买断' : '未归还'}
                     </span>
                   </td>
                 </tr>

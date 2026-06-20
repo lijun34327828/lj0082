@@ -1,9 +1,10 @@
-import { Clock, DollarSign, BatteryCharging } from 'lucide-react';
+import { Clock, DollarSign, BatteryCharging, AlertTriangle } from 'lucide-react';
 import type { Rental } from '@shared/types';
 
 interface RentalCardProps {
   rental: Rental;
   currentFee?: number;
+  isBuyout?: boolean;
   onReturn?: (rentalId: number) => void;
 }
 
@@ -26,28 +27,30 @@ function formatTime(time: string): string {
   });
 }
 
-export default function RentalCard({ rental, currentFee, onReturn }: RentalCardProps) {
+export default function RentalCard({ rental, currentFee, isBuyout, onReturn }: RentalCardProps) {
   const isActive = rental.status === 'active';
   const isBoughtOut = rental.status === 'bought_out';
   const fee = currentFee ?? rental.currentFee ?? rental.totalFee ?? 0;
 
   return (
     <div className={`card-dark rounded-xl border p-5 transition-all ${
-      isActive ? 'border-brand-green/20' : isBoughtOut ? 'border-brand-orange/20' : 'border-white/5'
+      isBoughtOut ? 'border-brand-orange/20' : isBuyout ? 'border-brand-orange/30' : isActive ? 'border-brand-green/20' : 'border-white/5'
     }`}>
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BatteryCharging className={`h-5 w-5 ${isActive ? 'text-brand-green' : 'text-brand-orange'}`} />
+          <BatteryCharging className={`h-5 w-5 ${isBoughtOut || isBuyout ? 'text-brand-orange' : 'text-brand-green'}`} />
           <span className="text-sm font-medium text-white">{rental.deviceSerial ?? `设备#${rental.deviceId}`}</span>
         </div>
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-          isActive
-            ? 'bg-brand-green/10 text-brand-green'
-            : isBoughtOut
+          isBoughtOut
+            ? 'bg-brand-orange/10 text-brand-orange'
+            : isBuyout
               ? 'bg-brand-orange/10 text-brand-orange'
-              : 'bg-white/10 text-white/60'
+              : isActive
+                ? 'bg-brand-green/10 text-brand-green'
+                : 'bg-white/10 text-white/60'
         }`}>
-          {isActive ? '使用中' : isBoughtOut ? '已买断' : '已归还'}
+          {isBoughtOut ? '已买断' : isBuyout ? '待买断' : isActive ? '使用中' : '已归还'}
         </span>
       </div>
 
@@ -60,19 +63,30 @@ export default function RentalCard({ rental, currentFee, onReturn }: RentalCardP
         <div className="text-white/40">{rental.stationName ?? `点位#${rental.stationId}`}</div>
       </div>
 
+      {isBuyout && isActive && (
+        <div className="mb-3 flex items-center gap-1.5 rounded-lg bg-brand-orange/10 px-3 py-2 text-xs text-brand-orange">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          <span>已超24小时，归还时将按买断结算</span>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <DollarSign className="h-4 w-4 text-brand-green" />
-          <span className="font-display text-lg font-bold text-brand-green">
+          <DollarSign className={`h-4 w-4 ${isBoughtOut || isBuyout ? 'text-brand-orange' : 'text-brand-green'}`} />
+          <span className={`font-display text-lg font-bold ${isBoughtOut || isBuyout ? 'text-brand-orange' : 'text-brand-green'}`}>
             ¥{fee.toFixed(2)}
           </span>
         </div>
         {isActive && onReturn && (
           <button
             onClick={() => onReturn(rental.id)}
-            className="rounded-full border border-brand-green/30 bg-brand-green/10 px-4 py-1.5 text-xs font-medium text-brand-green transition-all hover:bg-brand-green/20 hover:shadow-[0_0_12px_rgba(0,230,138,0.15)]"
+            className={`rounded-full border px-4 py-1.5 text-xs font-medium transition-all ${
+              isBuyout
+                ? 'border-brand-orange/30 bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20 hover:shadow-[0_0_12px_rgba(255,159,67,0.15)]'
+                : 'border-brand-green/30 bg-brand-green/10 text-brand-green hover:bg-brand-green/20 hover:shadow-[0_0_12px_rgba(0,230,138,0.15)]'
+            }`}
           >
-            归还
+            {isBuyout ? '买断结算' : '归还'}
           </button>
         )}
       </div>
