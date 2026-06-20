@@ -1,11 +1,12 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { MapPin, AlertTriangle, Settings, Play, Zap } from 'lucide-react';
+import { MapPin, AlertTriangle, Settings, Play, Zap, TrendingUp } from 'lucide-react';
 
 const navItems = [
   { to: '/admin', label: '点位总览', icon: MapPin, exact: true },
   { to: '/admin/unreturned', label: '未归还清单', icon: AlertTriangle },
   { to: '/admin/pricing', label: '计费规则', icon: Settings },
   { to: '/admin/simulator', label: '计费模拟', icon: Play },
+  { to: '/admin/revenue', label: '营收报表', icon: TrendingUp },
 ];
 
 export default function AdminLayout() {

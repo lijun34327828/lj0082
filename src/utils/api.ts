@@ -1,4 +1,4 @@
-import type { Station, Device, Rental, PricingRule, SimulateRequest, SimulateResponse } from '@shared/types';
+import type { Station, Device, Rental, PricingRule, SimulateRequest, SimulateResponse, RevenueReport } from '@shared/types';
 
 const API_BASE = '/api';
 
@@ -112,4 +112,13 @@ export async function simulateBilling(params: SimulateRequest): Promise<Simulate
     method: 'POST',
     body: JSON.stringify(params),
   });
+}
+
+export async function getRevenueReport(
+  startDate: string,
+  endDate: string,
+  granularity: 'day' | 'week' | 'month',
+): Promise<RevenueReport> {
+  const qs = `?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&granularity=${granularity}`;
+  return request<RevenueReport>(`/admin/revenue${qs}`);
 }

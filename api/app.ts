@@ -9,6 +9,7 @@ import stationRoutes from './routes/stations.js'
 import rentalRoutes from './routes/rentals.js'
 import pricingRoutes from './routes/pricing.js'
 import deviceRoutes from './routes/devices.js'
+import adminRoutes from './routes/admin.js'
 import { startScheduler } from './scheduler.js'
 
 dotenv.config()
@@ -23,6 +24,7 @@ app.use('/api/stations', stationRoutes)
 app.use('/api/rentals', rentalRoutes)
 app.use('/api/pricing', pricingRoutes)
 app.use('/api/devices', deviceRoutes)
+app.use('/api/admin', adminRoutes)
 
 app.use(
   '/api/health',

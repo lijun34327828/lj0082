@@ -64,3 +64,30 @@ export interface SimulateResponse {
     totalFee: number;
   };
 }
+
+export interface RevenueDailyData {
+  date: string;
+  revenue: number;
+}
+
+export interface RevenueSummary {
+  totalOrders: number;
+  totalRevenue: number;
+  avgDailyRevenue: number;
+  buyoutRate: number;
+  avgRentHours: number;
+}
+
+export interface StationRanking {
+  stationName: string;
+  orderCount: number;
+  revenue: number;
+  buyoutCount: number;
+  avgHours: number;
+}
+
+export interface RevenueReport {
+  dailyData: RevenueDailyData[];
+  summary: RevenueSummary;
+  stationRanking: StationRanking[];
+}

@@ -8,6 +8,7 @@ import Overview from '@/pages/admin/Overview';
 import Unreturned from '@/pages/admin/Unreturned';
 import PricingRules from '@/pages/admin/PricingRules';
 import Simulator from '@/pages/admin/Simulator';
+import Revenue from '@/pages/admin/Revenue';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="unreturned" element={<Unreturned />} />
             <Route path="pricing" element={<PricingRules />} />
             <Route path="simulator" element={<Simulator />} />
+            <Route path="revenue" element={<Revenue />} />
           </Route>
         </Route>
       </Routes>
